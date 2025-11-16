@@ -14,8 +14,8 @@ app.use('/api/vehicles', vehiclesRouter);
 app.use('/api/bookings', bookingsRouter);
 app.use('/api/admin', adminRouter);
 // serve static
-const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+const PUBLIC_DIR = path.join(__dirname, 'public');
 app.use(express.static(PUBLIC_DIR));
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=> console.log(`🚀 BikeNest running on http://localhost:${PORT}`));
