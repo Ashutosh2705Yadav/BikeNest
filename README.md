@@ -8,7 +8,7 @@ Quick start (local dev):
    npm run migrate     # creates tables if missing
    npm run dev
 
-2. Open http://localhost:5000
+2. Open http://localhost:3000
 
 Neon deployment notes:
 - Create a Neon DB and user. Use the connection string provided by Neon and set it in backend/.env as PG_URI.
