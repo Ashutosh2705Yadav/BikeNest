@@ -1,0 +1,21 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const pool = require('./config/db');
+const vehiclesRouter = require('./routes/vehicles');
+const bookingsRouter = require('./routes/bookings');
+const adminRouter = require('./routes/admin');
+const dotenv = require('dotenv');
+dotenv.config();
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use('/api/vehicles', vehiclesRouter);
+app.use('/api/bookings', bookingsRouter);
+app.use('/api/admin', adminRouter);
+// serve static
+const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+app.use(express.static(PUBLIC_DIR));
+app.get('/', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, ()=> console.log(`🚀 BikeNest running on http://localhost:${PORT}`));
