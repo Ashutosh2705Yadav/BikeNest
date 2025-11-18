@@ -17,8 +17,9 @@
     <thead>
       <tr>
         <th>ID</th>
+        <th>Image</th>
         <th>Name</th>
-        <th>Type</th>
+        <th>Rate/hr</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
@@ -36,16 +37,17 @@ async function loadVehicles() {
     rows += `
       <tr>
         <td>${v.id}</td>
+        <td><img src="${v.image}" width="60"></td>
         <td>${v.name}</td>
-        <td>${v.type}</td>
+        <td>₹${v.rate_per_hour}</td>
         <td class="${v.available ? 'text-success' : 'text-danger'}">
           ${v.available ? 'Available' : 'Unavailable'}
         </td>
         <td>
-          <button class="btn btn-warning btn-sm" onclick="toggleAvailability(${v.id})">
+          <button class="btn btn-warning btn-sm" onclick="toggleAvailability('${v.id}')">
             Toggle
           </button>
-          <button class="btn btn-danger btn-sm" onclick="deleteVehicle(${v.id})">
+          <button class="btn btn-danger btn-sm" onclick="deleteVehicle('${v.id}')">
             Delete
           </button>
         </td>
@@ -58,13 +60,16 @@ async function loadVehicles() {
 
 async function deleteVehicle(id) {
   if (!confirm("Delete this vehicle?")) return;
-
   await fetch(`/api/vehicles/${id}`, { method: "DELETE" });
   loadVehicles();
 }
 
 async function toggleAvailability(id) {
-  await fetch(`/api/vehicles/${id}/toggle`, { method: "PUT" });
+  await fetch(`/api/vehicles/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({})
+  });
   loadVehicles();
 }
 
