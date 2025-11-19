@@ -132,54 +132,55 @@
     </div>
 
   </div>
-
   <script>
-const id = new URLSearchParams(window.location.search).get("id");
 
-// LOAD VEHICLE DETAILS
+  const id = new URLSearchParams(window.location.search).get("id");
+
 async function loadVehicle() {
   const res = await fetch(`/api/vehicles/${id}`);
-  
-  if (!res.ok) {
-    document.getElementById("vehicleName").textContent = "Vehicle not found";
-    return;
-  }
-
   const data = await res.json();
 
   document.getElementById("vehicleName").textContent = data.name;
   document.getElementById("vehicleType").textContent = "Type: " + data.type;
-  document.getElementById("vehiclePrice").textContent = "Rate/hr: ₹" + data.rate_per_hour;
+  document.getElementById("vehiclePrice").textContent = "₹" + data.rate_per_hour + "/hr";
 }
 
 loadVehicle();
 
-// FORM SUBMIT
 document.getElementById("bookingForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const body = {
-    vehicle_id: id,
-    customerName: document.getElementById("customerName").value,
-    phone: document.getElementById("phone").value,
-    startDate: document.getElementById("startDate").value,
-    endDate: document.getElementById("endDate").value
+    vehicleId: id,
+    renterName: document.getElementById("customerName").value,
+    renterPhone: document.getElementById("phone").value,
+    durationHours: 24,
+    paymentMode: "cash"
   };
 
-  const res = await fetch("/api/bookings", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
+  try {
+    const res = await fetch("/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
 
-  if (res.ok) {
-    document.getElementById("successMsg").classList.remove("d-none");
-  } else {
+    const output = await res.json();
+
+    if (res.ok) {
+      document.getElementById("successMsg").classList.remove("d-none");
+      document.getElementById("errorMsg").classList.add("d-none");
+    } else {
+      document.getElementById("errorMsg").classList.remove("d-none");
+      document.getElementById("successMsg").classList.add("d-none");
+    }
+
+  } catch (err) {
     document.getElementById("errorMsg").classList.remove("d-none");
+    document.getElementById("successMsg").classList.add("d-none");
   }
 });
 </script>
-
 </body>
 
 </html>
