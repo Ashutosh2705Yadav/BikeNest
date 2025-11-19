@@ -134,48 +134,51 @@
   </div>
 
   <script>
-    const id = new URLSearchParams(window.location.search).get("id");
+const id = new URLSearchParams(window.location.search).get("id");
 
-    async function loadVehicle() {
-      const res = await fetch(`/api/vehicles/${id}`);
-      const data = await res.json();
+// LOAD VEHICLE DETAILS
+async function loadVehicle() {
+  const res = await fetch(`/api/vehicles/${id}`);
+  
+  if (!res.ok) {
+    document.getElementById("vehicleName").textContent = "Vehicle not found";
+    return;
+  }
 
-      document.getElementById("vehicleName").textContent = data.name;
-      document.getElementById("vehicleType").textContent = "Type: " + data.type;
-      document.getElementById("vehiclePrice").textContent = "Price per day: ₹" + data.price;
-    }
+  const data = await res.json();
 
-    loadVehicle();
+  document.getElementById("vehicleName").textContent = data.name;
+  document.getElementById("vehicleType").textContent = "Type: " + data.type;
+  document.getElementById("vehiclePrice").textContent = "Rate/hr: ₹" + data.rate_per_hour;
+}
 
-    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+loadVehicle();
 
-      const body = {
-        vehicle_id: id,
-        customerName: document.getElementById("customerName").value,
-        phone: document.getElementById("phone").value,
-        startDate: document.getElementById("startDate").value,
-        endDate: document.getElementById("endDate").value
-      };
+// FORM SUBMIT
+document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      try {
-        const res = await fetch("/api/bookings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
+  const body = {
+    vehicle_id: id,
+    customerName: document.getElementById("customerName").value,
+    phone: document.getElementById("phone").value,
+    startDate: document.getElementById("startDate").value,
+    endDate: document.getElementById("endDate").value
+  };
 
-        if (res.status === 200) {
-          document.getElementById("successMsg").classList.remove("d-none");
-        } else {
-          document.getElementById("errorMsg").classList.remove("d-none");
-        }
+  const res = await fetch("/api/bookings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
 
-      } catch (err) {
-        document.getElementById("errorMsg").classList.remove("d-none");
-      }
-    });
-  </script>
+  if (res.ok) {
+    document.getElementById("successMsg").classList.remove("d-none");
+  } else {
+    document.getElementById("errorMsg").classList.remove("d-none");
+  }
+});
+</script>
 
 </body>
 
